@@ -3,13 +3,11 @@
 
 Inspired by the NASA ISS Tracker: https://spotthestation.nasa.gov/tracking_map.cfm
 
-This version adds a list of places and shows which one if currently the closest to the ISS.
+This version adds a list of places and shows which one is currently the closest to the ISS.
 Originally built as a novel way to highlight Oracle OCI cloud regions round the world.
 
-It uses satellite data from NORAD and the skyfield python library to compute the satellite's
-Each ISS orbits is roughly 90 minutes.
-
-
+It uses satellite data from NORAD and the skyfield python library to compute the satellite's position. It launches a separate window using pygame.
+Each ISS orbits is roughly 90 minutes, but you can control the speed to go into th future or the past!
 
 Two main scripts:
 * iss_tracker.py - a simple text based output showing ISS data and closest place
