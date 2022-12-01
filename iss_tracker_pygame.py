@@ -222,7 +222,7 @@ class Map:
 		orbit_time = ts.utc(t_current.utc_datetime() + datetime.timedelta(minutes=orbit_time_mins))
 		old_lat, old_long, alt, speed = get_sat_pos(self.sat, orbit_time)
 
-		for orbit_time_mins in range(-orbit_plot_duration_mins, orbit_plot_duration_mins, increment_mins):
+		for orbit_time_mins in range(-orbit_plot_duration_mins, orbit_plot_duration_mins + increment_mins, increment_mins):
 
 			orbit_time = ts.utc(t_current.utc_datetime() + datetime.timedelta(minutes=orbit_time_mins))
 

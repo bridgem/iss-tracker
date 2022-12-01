@@ -18,7 +18,7 @@ from pyfiglet import Figlet
 import sys
 from skyfield.api import Topos, load, EarthSatellite
 from get_tle import get_tle
-from places import closest_place_to, latlong, place
+from places import closest_place_to, latlong
 
 DEG_PER_RAD = 180.0 / math.pi
 OBSERVER_HOME = 'London'
