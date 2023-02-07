@@ -88,7 +88,7 @@ def display_headers(screen, sat_name, tle_line1, tle_line2):
 		screen.addstr(FIRST_DATA_LINE + 9, 54, 'Azimuth')
 		screen.addstr(FIRST_DATA_LINE + 10, 54, 'Range')
 
-		screen.addstr(FIRST_DATA_LINE + 12, 1, f'{"Nearest OCI Region:"}')
+		screen.addstr(FIRST_DATA_LINE + 12, 1, 'Nearest Place:')
 	else:
 		print(sat_name)
 		print(tle_line1)
@@ -115,7 +115,7 @@ def update_screen(screen, observer_name, observer: Topos, sat: EarthSatellite):
 	# Find closest place/city from list
 	nearest_city, dist = closest_place_to(latlong(dlat, dlon))
 
-	nearest_loc = nearest_city.id
+	nearest_loc = f"{nearest_city.id}, {nearest_city.name}"
 
 	if CURSES:
 		n = datetime.utcnow()
@@ -135,13 +135,12 @@ def update_screen(screen, observer_name, observer: Topos, sat: EarthSatellite):
 		screen.addstr(FIRST_DATA_LINE + 9, 64, f'{az.degrees:>10.4f} deg')
 		screen.addstr(FIRST_DATA_LINE + 10, 63, f'{distance.km:>6.0f} km')
 
-		screen.addstr(FIRST_DATA_LINE + 14,  1, f'{nearest_loc:17s} {int(dist):5d} km', curses.A_BOLD)
-		screen.addstr(FIRST_DATA_LINE + 17, 1, '')
+		screen.addstr(FIRST_DATA_LINE + 12,  16, f'{nearest_loc} ({int(dist)}km)', curses.A_BOLD)
 		screen.refresh()
 
 	else:
 		# print(f'{t.utc_strftime("%Y-%m-%d %H:%M:%S.%f")} Obs: {observer_name:12s} {observer.latitude.degrees:8.4f} ,{observer.longitude.degrees:9.4f}')
-		print(f'{t.utc_strftime("%Y-%m-%d %H:%M:%S.%f")} Pos: {sat.name:12s} {dlat:8.4f} ,{dlon:9.4f}   '
+		print(f'{t.utc_strftime("%Y-%m-%d %H:%M:%S")} Pos: {dlat:8.4f}, {dlon:9.4f}   '
 		      f'{alt_sym} {alt.degrees:>5.1f}  {az_sym} {az.degrees:>5.1f}  '
 		      f'Ht: {delev:3.0f} km  Range: {distance.km:5.0f} km  '
 		      f' Nearest: {nearest_loc:12s} {int(dist):4d} km')
