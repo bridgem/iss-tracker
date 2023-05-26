@@ -1,0 +1,10 @@
+__pycache__/get_tle.cpython-39.pyc
+__pycache__/iss_tracker.cpython-39.pyc
+__pycache__/places.cpython-39.pyc
+/_notes.txt
+mapday.jpg
+mapnight.jpg
+unused/
+*.pyc
+/stations.txt
+/de421.bsp

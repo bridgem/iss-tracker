@@ -352,7 +352,7 @@ test_places = [
 #places = summer_olympics + winter_olympics
 places = capitals
 
-R = 6371.0     # Radius of Earth (km)
+R = 6378.1   # Radius of Earth (km)
 
 
 def dist_between(p1, p2):
