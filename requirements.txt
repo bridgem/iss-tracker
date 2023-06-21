@@ -1,4 +1,4 @@
 pygame>=2.1
 skyfield>=1.42
-pyfiglet>0.8
+pyfiglet>=0.8
 requests>2.26

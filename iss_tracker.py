@@ -50,6 +50,7 @@ def init_screen():
 		scr = curses.initscr()
 		curses.noecho()
 		curses.cbreak()
+		curses.start_color()
 		scr.nodelay(True)
 		scr.keypad(1)
 		scr.clear()
@@ -116,6 +117,7 @@ def update_screen(screen, observer_name, observer: Topos, sat: EarthSatellite):
 	nearest_city, dist = closest_place_to(latlong(dlat, dlon))
 
 	nearest_loc = f"{nearest_city.id}, {nearest_city.name}"
+	nearest_with_dist = f"{nearest_loc} ({int(dist)} km)"
 
 	if CURSES:
 		n = datetime.utcnow()
@@ -135,7 +137,8 @@ def update_screen(screen, observer_name, observer: Topos, sat: EarthSatellite):
 		screen.addstr(FIRST_DATA_LINE + 9, 64, f'{az.degrees:>10.4f} deg')
 		screen.addstr(FIRST_DATA_LINE + 10, 63, f'{distance.km:>6.0f} km')
 
-		screen.addstr(FIRST_DATA_LINE + 12,  16, f'{nearest_loc} ({int(dist)}km)', curses.A_BOLD)
+		screen.addstr(FIRST_DATA_LINE + 12,  16, f'{nearest_with_dist:72s} ', curses.A_BOLD)
+		screen.move(24, 1)
 		screen.refresh()
 
 	else:
