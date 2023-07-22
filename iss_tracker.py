@@ -22,11 +22,10 @@ from places import closest_place_to, latlong
 
 DEG_PER_RAD = 180.0 / math.pi
 OBSERVER_HOME = 'London'
-OBSERVER_LAT = 51.4771556
-OBSERVER_LON = 0.0
+OBSERVER_LAT = 51.4779139
+OBSERVER_LON = -0.0040497
 OBSERVER_ELEV = 10
 SAT_NAME = 'ISS (ZARYA)'
-
 
 CURSES = False
 FIRST_DATA_LINE = 9    # First line on screen for data output
@@ -71,10 +70,10 @@ def display_headers(screen, sat_name, tle_line1, tle_line2):
 		screen.addstr(FIRST_DATA_LINE,  1, f'Object:      {sat_name}')
 		screen.addstr(FIRST_DATA_LINE + 1, 1, f'TLE1:        {tle_line1}')
 		screen.addstr(FIRST_DATA_LINE + 2, 1, f'TLE2:        {tle_line2}')
-		screen.addstr(FIRST_DATA_LINE + 4, 1, f'TLE Epoc     {d}')
+		screen.addstr(FIRST_DATA_LINE + 3, 1, f'TLE Epoc:    {d}')
 
 		# Data Labels
-		screen.addstr(FIRST_DATA_LINE + 5, 1, 'Time Now')
+		screen.addstr(FIRST_DATA_LINE + 5, 1, 'Time Now:')
 
 		screen.addstr(FIRST_DATA_LINE + 7, 1, 'Observer', curses.A_BOLD)
 		screen.addstr(FIRST_DATA_LINE + 8, 1, 'Lat')
@@ -120,6 +119,7 @@ def update_screen(screen, observer_name, observer: Topos, sat: EarthSatellite):
 	nearest_with_dist = f"{nearest_loc} ({int(dist)} km)"
 
 	if CURSES:
+
 		n = datetime.utcnow()
 		nowstr = n.strftime('%a %d %b %Y %H:%M:%S.%f %Z')
 		screen.addstr(FIRST_DATA_LINE + 5, 14, nowstr)
@@ -165,8 +165,9 @@ def get_input(screen):
 			reset_terminal(screen)
 			sys.exit()
 		elif ch == ord('r'):
+			reset_terminal(screen)
 			# Restart
-			os.execl(sys.executable, sys.executable, *sys.argv)
+			# os.execl(sys.executable, sys.executable, *sys.argv)
 
 
 if __name__ == "__main__":

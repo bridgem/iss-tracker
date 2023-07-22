@@ -170,6 +170,7 @@ class DataSurface:
 
         return
 
+
 class Map:
 
     def __init__(self, sat, timescale, day_image_name, night_image_name, width, height, screen_scale):
