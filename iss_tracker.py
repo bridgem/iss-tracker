@@ -1,8 +1,10 @@
+#!python
 # iss_tracker.py
 # Show ISS position data and nearest place from a list of places
 # Single line text output, or curses character based screen (-c switch)
 #
 # Martin Bridge, Jun 2021
+# 27-jul-2024	Use python rich instead of curses
 
 # Credits:
 # https://celestrak.com/NORAD/elements/stations.txt
@@ -12,191 +14,196 @@ import argparse
 import math
 import time
 from datetime import datetime, timedelta
-import curses
-import os
 from pyfiglet import Figlet
-import sys
+from dataclasses import dataclass
+
+# Astro calculations
 from skyfield.api import Topos, load, EarthSatellite
-from get_tle import get_tle
+
+# Rich text
+from rich.align import Align
+from rich.style import Style
+from rich.columns import Columns
+from rich.console import Group
+from rich.table import Table
+from rich.text import Text
+from rich.panel import Panel
+from rich.layout import Layout
+from rich.live import Live
+
+# Local
+from get_tle import TLE
 from places import closest_place_to, latlong
 
 DEG_PER_RAD = 180.0 / math.pi
-OBSERVER_HOME = 'London'
+OBSERVER_TITLE = 'London'
 OBSERVER_LAT = 51.4779139
 OBSERVER_LON = -0.0040497
 OBSERVER_ELEV = 10
 SAT_NAME = 'ISS (ZARYA)'
-
-CURSES = False
-FIRST_DATA_LINE = 9    # First line on screen for data output
 # figlet fonts: chunky doom graffiti speed big slant crawford roman  stop univers
-figfont = Figlet(font='slant', width=200)
+FIGFONTNAME = "slant"
 
-alt_sym = "Alt:"
-az_sym = "Az:"
-
-
-def get_obs_date():
-	# Return date for observation
-	# Useful for debug
-	# TODO: Could specify as a commmand line parameter for a fixed time
-	# return ts.utc(2020, 12, 14, 23, 37, 25.511375)
-	return ts.now()
+ALT_SYM = "Alt:"
+AZ_SYM = "Az:"
 
 
-def init_screen():
-	if CURSES:
-		scr = curses.initscr()
-		curses.noecho()
-		curses.cbreak()
-		curses.start_color()
-		scr.nodelay(True)
-		scr.keypad(1)
-		scr.clear()
-		scr.addstr(1, 1, figfont.renderText('Satellite Tracker'))
-		return scr
-	else:
-		return None
+@dataclass
+class Tracker:
+	# def __init__(self, output_type, tle: TLE, observer: Topos, sat: EarthSatellite):
+	output_type: str
+	observer_name: str
+	tle: TLE
+	observer: Topos
+	sat: EarthSatellite
+
+	def __post_init__(self):
+		# Define rich layout
+		if output_type == "rich":
+			self.layout = Layout(name="screen")
+			self.layout.split_column(
+				Layout(name="header", size=6),
+				Layout(name="upper", size=8),
+				Layout(name="lower"),   # size=8),
+				Layout(name="footer", size=3),
+			)
+			self.layout["lower"].split_row(
+				Layout(name="left", size=34),
+				Layout(name="right")
+			)
+
+	def __update_sat(self):
+		self.t = ts.now()
+		geocentric = sat.at(self.t)
+		subpoint = geocentric.subpoint()
+
+		self.sat_lat = subpoint.latitude.degrees
+		self.sat_lon = subpoint.longitude.degrees
+		self.sat_elev = subpoint.elevation.km
+
+		# Display value units, degrees & km
+		difference = sat - observer
+		topocentric = difference.at(self.t)
+		self.obs_sat_alt, self.obs_sat_az, self.obs_sat_distance = topocentric.altaz()
+
+		# Find the closest place/city from list
+		self.sat_nearest_city, self.sat_city_dist = closest_place_to(latlong(self.sat_lat, self.sat_lon))
+		nearest_loc = f"{self.sat_nearest_city.id}, {self.sat_nearest_city.name}"
+		self.nearest_with_dist = f"{nearest_loc} ({int(self.sat_city_dist)} km)"
+
+		# Calculate speed from velocity vector
+		v = geocentric.velocity.km_per_s
+		self.vkms = math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2])
+		self.vkmh = self.vkms * 3600
+		self.vmph = self.vkmh * 0.621371
+
+	# def update_screen(self, observer_name, observer: Topos, tle: TLE, sat: EarthSatellite):
+	def update_screen(self):
+		# Update satellite position
+		self.__update_sat()
+
+		# Output the data
+		# Screen header title
+		figfont = Figlet(font=FIGFONTNAME, width=200)
+		ascii_art = figfont.renderText('Satellite Tracker').rstrip()
+
+		if self.output_type == "list":
+			print(f'{self.t.utc_strftime("%Y-%m-%d %H:%M:%S")} Pos: {self.sat_lat:8.4f}, {self.sat_lon:9.4f}   '
+				  f'{ALT_SYM} {self.obs_sat_alt.degrees:>5.1f}  {AZ_SYM} {self.obs_sat_az.degrees:>5.1f}  '
+				  f'Ht: {self.sat_elev:3.0f} km  Range: {self.obs_sat_distance.km:5.0f} km  '
+				  f' Nearest: {self.nearest_with_dist}')
+
+		elif self.output_type == "rich":
+			author = "by Martin Bridge"
+			heading_group = Group(
+				Align(Text(ascii_art.rstrip(), style="bold"), align="center"),
+				Align(Text(author, Style(dim=True, italic=True, color="#aaaaaa")), align="right"),
+			)
+
+			# Define the TLE details as a Table
+			object_table = Table(show_header=False, show_lines=False, show_edge=False, show_footer=False)
+			object_table.add_row("Object:", sat.name)
+			object_table.add_row("TLE1:", tle.line1)
+			object_table.add_row("TLE2:", tle.line2)
+			object_table.add_row("TLE Epoch:", tle.epoch)
+
+			n = datetime.utcnow()
+			nowstr = n.strftime('%a %d %b %Y %H:%M:%S.%f %Z')
+			object_table.add_row("", "")
+			object_table.add_row("Time Now: ", nowstr)
+
+			# Define the observation details as a Table
+			obs_table = Table(show_header=False, show_lines=False, show_edge=True, show_footer=False, header_style="bold magenta")
+			obs_table.add_column(f"Observer: {self.observer_name}")
+			obs_table.add_row("Latitude", f"{observer.latitude.degrees:10.4f}")
+			obs_table.add_row("Longitude", f"{observer.longitude.degrees:10.4f}")
+			obs_table.add_row("Range", f"{self.obs_sat_distance.km:5.0f} km")
+
+			sat_table = Table(show_header=False, show_lines=False, show_edge=True, show_footer=False, header_style="bold magenta")
+			sat_table.add_column("Satellite")
+			sat_table.add_row("Latitude", f"{self.sat_lat:10.4f}")
+			sat_table.add_row("Longitude", f"{self.sat_lon:10.4f}")
+			sat_table.add_row("Altitude", f"{self.sat_elev:5.0f} km")
+			sat_table.add_row("Speed", f"{self.vkmh:5.0f} km/h")
+			sat_table.add_row("", f"{self.vmph:5.0f} mph")
+
+			sat_table2 = Table(show_header=False, show_lines=False, show_edge=True, show_footer=False, header_style="bold magenta")
+			sat_table2.add_row("Elevation", f"{self.obs_sat_alt.degrees:10.4f} deg")
+			sat_table2.add_row("Azimuth", f"{self.obs_sat_az.degrees:10.4f} deg")
+
+			# Panels
+			tle_panel = Panel(object_table, title="Satellite Information", title_align="left", border_style="green")
+			obs_panel = Panel(obs_table, title="Observer: London", title_align="left", border_style="cyan")
+			sat_panel = Panel(Columns([sat_table, sat_table2]), title=f"Satellite: {sat.name}", title_align="left", border_style="cyan")
+			status_panel = Panel(Text(self.nearest_with_dist), title="Nearest Place", title_align="left", border_style="cyan")
+
+			self.layout["header"].update(heading_group)
+			self.layout["upper"].update(tle_panel)
+			self.layout["left"].update(obs_panel)
+			self.layout["right"].update(sat_panel)
+			self.layout["footer"].update(status_panel)
 
 
-def display_headers(screen, sat_name, tle_line1, tle_line2):
-	year = 2000 + int(tle_line1[18:20])
-	decimal_days = float(tle_line1[20:32])
-	epoch = datetime(year, 1, 1) + timedelta(decimal_days - 1)
-	d = epoch.strftime("%a %d %b %Y %H:%M:%S")
-
-	if CURSES:
-		screen.addstr(FIRST_DATA_LINE - 2,  1, ''.ljust(82,'_'))
-		screen.addstr(FIRST_DATA_LINE,  1, f'Object:      {sat_name}')
-		screen.addstr(FIRST_DATA_LINE + 1, 1, f'TLE1:        {tle_line1}')
-		screen.addstr(FIRST_DATA_LINE + 2, 1, f'TLE2:        {tle_line2}')
-		screen.addstr(FIRST_DATA_LINE + 3, 1, f'TLE Epoc:    {d}')
-
-		# Data Labels
-		screen.addstr(FIRST_DATA_LINE + 5, 1, 'Time Now:')
-
-		screen.addstr(FIRST_DATA_LINE + 7, 1, 'Observer', curses.A_BOLD)
-		screen.addstr(FIRST_DATA_LINE + 8, 1, 'Lat')
-		screen.addstr(FIRST_DATA_LINE + 9, 1, 'Lon')
-
-		screen.addstr(FIRST_DATA_LINE + 7, 28, 'Sat', curses.A_BOLD)
-		screen.addstr(FIRST_DATA_LINE + 8, 28, 'Lat')
-		screen.addstr(FIRST_DATA_LINE + 9, 28, 'Lon')
-		screen.addstr(FIRST_DATA_LINE + 10, 28, 'Altitude')
-
-		screen.addstr(FIRST_DATA_LINE + 8, 54, 'Elevation')
-		screen.addstr(FIRST_DATA_LINE + 9, 54, 'Azimuth')
-		screen.addstr(FIRST_DATA_LINE + 10, 54, 'Range')
-
-		screen.addstr(FIRST_DATA_LINE + 12, 1, 'Nearest Place:')
-	else:
-		print(sat_name)
-		print(tle_line1)
-		print(tle_line2)
-		print(f'TLE Epoch: {d}')
-		print()
-
-
-def update_screen(screen, observer_name, observer: Topos, sat: EarthSatellite):
-	t = get_obs_date()
-
-	geocentric = sat.at(t)
-	subpoint = geocentric.subpoint()
-
-	dlat = subpoint.latitude.degrees
-	dlon = subpoint.longitude.degrees
-	delev = int(subpoint.elevation.km)
-
-	# Display value units, degrees & km
-	difference = sat - observer
-	topocentric = difference.at(t)
-	alt, az, distance = topocentric.altaz()
-
-	# Find closest place/city from list
-	nearest_city, dist = closest_place_to(latlong(dlat, dlon))
-
-	nearest_loc = f"{nearest_city.id}, {nearest_city.name}"
-	nearest_with_dist = f"{nearest_loc} ({int(dist)} km)"
-
-	if CURSES:
-
-		n = datetime.utcnow()
-		nowstr = n.strftime('%a %d %b %Y %H:%M:%S.%f %Z')
-		screen.addstr(FIRST_DATA_LINE + 5, 14, nowstr)
-
-		screen.addstr(FIRST_DATA_LINE + 7, 10, f'{observer_name:>12s}', curses.A_BOLD)
-		screen.addstr(FIRST_DATA_LINE + 8, 10, f'{observer.latitude.degrees:>12.4f}')
-		screen.addstr(FIRST_DATA_LINE + 9, 10, f'{observer.longitude.degrees:>12.4f}')
-
-		screen.addstr(FIRST_DATA_LINE + 7, 36, f'{sat.name:>12s}', curses.A_BOLD)
-		screen.addstr(FIRST_DATA_LINE + 8, 36, f'{dlat:>12.4f}')
-		screen.addstr(FIRST_DATA_LINE + 9, 36, f'{dlon:>12.4f}')
-		screen.addstr(FIRST_DATA_LINE + 10, 37, f'{delev:>6.0f} km')
-
-		screen.addstr(FIRST_DATA_LINE + 8, 64, f'{alt.degrees:>10.4f} deg')
-		screen.addstr(FIRST_DATA_LINE + 9, 64, f'{az.degrees:>10.4f} deg')
-		screen.addstr(FIRST_DATA_LINE + 10, 63, f'{distance.km:>6.0f} km')
-
-		screen.addstr(FIRST_DATA_LINE + 12,  16, f'{nearest_with_dist:72s} ', curses.A_BOLD)
-		screen.move(24, 1)
-		screen.refresh()
-
-	else:
-		# print(f'{t.utc_strftime("%Y-%m-%d %H:%M:%S.%f")} Obs: {observer_name:12s} {observer.latitude.degrees:8.4f} ,{observer.longitude.degrees:9.4f}')
-		print(f'{t.utc_strftime("%Y-%m-%d %H:%M:%S")} Pos: {dlat:8.4f}, {dlon:9.4f}   '
-		      f'{alt_sym} {alt.degrees:>5.1f}  {az_sym} {az.degrees:>5.1f}  '
-		      f'Ht: {delev:3.0f} km  Range: {distance.km:5.0f} km  '
-		      f' Nearest: {nearest_loc:12s} {int(dist):4d} km')
-
-
-def reset_terminal(screen):
-	if CURSES:
-		screen.keypad(0)
-		curses.echo()
-		curses.nocbreak()
-		curses.endwin()
-
-
-def get_input(screen):
-	if CURSES:
-		# stay in this loop till the user presses 'q'
-		ch = screen.getch()
-		if ch == ord('q'):
-			reset_terminal(screen)
-			sys.exit()
-		elif ch == ord('r'):
-			reset_terminal(screen)
-			# Restart
-			# os.execl(sys.executable, sys.executable, *sys.argv)
+def print_tle(tle):
+	print(tle.sat_name)
+	print(tle.line1)
+	print(tle.line2)
+	print(f'TLE Epoch: {tle.epoch}')
+	print()
 
 
 if __name__ == "__main__":
+	parser = argparse.ArgumentParser(description='Satellite Tracker')
+	parser.add_argument('-r', '--rich', help='Use rich output on live screen', action='store_true')
+	args = parser.parse_args()
+	output_type = "rich" if args.rich else "list"
 
 	try:
-		CURSES = False
-		parser = argparse.ArgumentParser(description='Satellite Tracker')
-		parser.add_argument('-c', '--curses', help='Use curses output', action='store_true')
-		args = parser.parse_args()
-		CURSES = args.curses
+		tle = TLE(SAT_NAME)
 
-		screen = init_screen()
-
-		found, tle_line1, tle_line2 = get_tle(SAT_NAME)
-
-		if not found:
+		if not tle.is_valid():
 			print(f"Error: Satellite '{SAT_NAME}' not found")
 		else:
 			ts = load.timescale()
-			sat = EarthSatellite(tle_line1, tle_line2, SAT_NAME, ts)
+			sat = EarthSatellite(tle.line1, tle.line2, SAT_NAME, ts)
 			observer = Topos(OBSERVER_LAT, OBSERVER_LON, elevation_m=OBSERVER_ELEV)
 
-			display_headers(screen, SAT_NAME, tle_line1, tle_line2)
+			screen = Tracker(output_type, OBSERVER_TITLE, tle, observer, sat)
 
-			while True:
-				update_screen(screen, OBSERVER_HOME, observer, sat)
-				time.sleep(1.0)
+			# Update before loop to prevent Live from showing an unpopulated layout
+			screen.update_screen()
 
-				get_input(screen)
+			if output_type == "rich":
+				with Live(screen.layout, refresh_per_second=1, screen=True) as live:
+					# Can only be interrupted by ctrl+C !
+					while True:
+						screen.update_screen()
+						time.sleep(1.0)
+			else:
+				print_tle(tle)
+				while True:
+					screen.update_screen()
+					time.sleep(1.0)
 
-	finally:
-		reset_terminal(screen)
+	except KeyboardInterrupt:
+		pass

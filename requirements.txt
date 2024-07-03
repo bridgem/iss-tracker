@@ -2,3 +2,5 @@ pygame>=2.1
 skyfield>=1.42
 pyfiglet>=0.8
 requests>2.26
+windows-curses; sys_platform == 'win32'
+rich

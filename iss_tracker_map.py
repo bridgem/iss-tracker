@@ -19,7 +19,7 @@ from pygame.locals import *
 from skyfield import almanac
 from skyfield.api import load, EarthSatellite, wgs84
 import skyfield.positionlib
-from get_tle import get_tle
+from get_tle import TLE
 from places import closest_place_to, latlong, places
 
 DEBUG = False       # Global - switched on with keystroke
@@ -41,6 +41,7 @@ orbit_color_back = (200, 200, 200)
 orbit_color_fwd = (255, 255, 100)
 marker_color = (240, 55, 128)  # To plot cities/DCs
 marker_outline = (255, 255, 255)
+marker_highlight_color = (240, 240, 20)
 
 # base values are what were used to calculate original layout on an HD screen
 base_w, base_h = 1920, 1080
@@ -68,9 +69,11 @@ base_map_h = 880       # Was 945
 data_surface_w = base_w
 data_surface_h = 100
 data_surface_color = (199, 70, 52)     # Data surface at bottom of screen
-header_font = {'name': 'couriernew', 'size': 48, 'bold': True,  'color': (255, 192, 0),   'bg_color': header_color}
-label_font = {'name': 'calibri',    'size': 30, 'bold': False, 'color': (200, 200, 200), 'bg_color': data_surface_color}
-data_font = {'name': 'calibri',    'size': 36, 'bold': False, 'color': "white",         'bg_color': data_surface_color}
+transparent_color = (255, 255, 255, 255)
+header_font = {'name': 'couriernew', 'size': 48, 'bold': True,  'color': (255, 192, 0), 'bg_color': header_color}
+label_font = {'name': 'calibri', 'size': 30, 'bold': False, 'color': (200, 200, 200), 'bg_color': data_surface_color}
+data_font = {'name': 'calibri', 'size': 36, 'bold': False, 'color': "white", 'bg_color': data_surface_color}
+info_font = {'name': 'calibri', 'size': 30, 'bold': False, 'color': "black", 'bg_color': transparent_color}
 
 # # Time parameters for calculating observation time
 # actual_time_prev = time.time()  # Baseline time (actual real-world time)
@@ -84,7 +87,7 @@ one_eighty_over_pi = 180.0 / math.pi
 
 class TextField:
 
-    def __init__(self, surface, x, y, width, height, screen_scale, font, text=""):
+    def __init__(self, surface, x, y, width, height, screen_scale, font, text="", centered=False, vcentered=False):
 
         self.surface = surface  # Surface on which this field is drawn
         self.x = int(x * screen_scale)
@@ -99,31 +102,36 @@ class TextField:
 
         self.image = pygame.Surface([self.width, self.height])
         self.rect = self.image.get_rect()
-        self.text = text
         self.font = pygame.font.SysFont(self.font_name, self.font_size, bold=self.bold)
-
-        font_h = self.font.get_height()
+        self.text = text
+        self.centered = centered
+        self.vcentered = vcentered
 
         self.image.fill(self.bg_color)
         if text != "":
             self.write_text(text)
         return
 
-    def write_text(self, text, centered=False, vcentered=False):
+    def write_text(self, text):
         text_image = self.font.render(text, True, self.text_color, self.bg_color)
 
         bg_rect_x = self.x
         bg_rect_y = self.y
-        if centered:
+        if self.centered:
             self.x = (self.surface.get_width() - text_image.get_width()) / 2
             bg_rect_x = (self.surface.get_width() - self.image.get_width()) / 2
 
-        if vcentered:
+        if self.vcentered:
             self.y = (self.surface.get_height() - text_image.get_height()) / 2
             bg_rect_y = (self.surface.get_height() - self.image.get_height()) / 2
 
         self.surface.blit(self.image, [bg_rect_x, bg_rect_y])
-        self.surface.blit(text_image, [self.x, self.y])
+
+        th = text_image.get_height()
+        bgh = self.image.get_height()
+
+        y2 = (bgh - th) / 2
+        self.surface.blit(text_image, [self.x, self.y + y2])
         return
 
 
@@ -137,7 +145,7 @@ class HeaderSurface:
         self.surface = pygame.Surface([self.width, self.height])
         self.surface.fill(self.color)
 
-        self.heading_field = TextField(self.surface, 0, 0, wd, ht, screen_scale, header_font)
+        self.heading_field = TextField(self.surface, 0, 0, wd, ht, screen_scale, header_font, centered=True)
 
         return
 
@@ -152,23 +160,39 @@ class DataSurface:
         self.surface = pygame.Surface([self.width, self.height])
         self.surface.fill(self.color)
 
-        TextField(self.surface,  20, 15, 130, 50, screen_scale, label_font, text="Latitude")
-        TextField(self.surface, 150, 15, 130, 50, screen_scale, label_font, text="Longitude")
-        TextField(self.surface, 300, 15, 130, 50, screen_scale, label_font, text="Altitude")
-        TextField(self.surface, 440, 15, 200, 50, screen_scale, label_font, text="Speed")
-        TextField(self.surface, 660, 15, 350, 50, screen_scale, label_font, text="Time (GMT)")
-        TextField(self.surface, 1015, 15, 420, 50, screen_scale, label_font, text="Nearest Place")
-        TextField(self.surface, 1700, 15, 150, 50, screen_scale, label_font, text="Time Factor")
+        TextField(self.surface,   20, 10, 130, 40, screen_scale, label_font, text="Latitude")
+        TextField(self.surface,  150, 10, 130, 40, screen_scale, label_font, text="Longitude")
+        TextField(self.surface,  300, 10, 130, 40, screen_scale, label_font, text="Altitude")
+        TextField(self.surface,  440, 10, 200, 40, screen_scale, label_font, text="Speed")
+        TextField(self.surface,  660, 10, 350, 40, screen_scale, label_font, text="Time (GMT)")
+        TextField(self.surface, 1015, 10, 420, 40, screen_scale, label_font, text="Nearest Place")
+        TextField(self.surface, 1700, 10, 150, 40, screen_scale, label_font, text="Time Factor")
 
-        self.lat_field = TextField(self.surface, 20, 55, 130, 50, screen_scale, data_font)
-        self.long_field = TextField(self.surface, 150, 55, 130, 50, screen_scale, data_font)
-        self.alt_field = TextField(self.surface, 300, 55, 130, 50, screen_scale, data_font)
-        self.speed_field = TextField(self.surface, 440, 55, 200, 50, screen_scale, data_font)
-        self.time_field = TextField(self.surface, 660, 55, 350, 50, screen_scale, data_font)
-        self.place_field = TextField(self.surface, 1015, 55, 680, 50, screen_scale, data_font)
-        self.timefactor_field = TextField(self.surface, 1700, 55, 150, 50, screen_scale, data_font)
+        self.lat_field = TextField(self.surface, 20, 50, 130, 45, screen_scale, data_font)
+        self.long_field = TextField(self.surface, 150, 50, 130, 45, screen_scale, data_font)
+        self.alt_field = TextField(self.surface, 300, 50, 130, 45, screen_scale, data_font)
+        self.speed_field = TextField(self.surface, 440, 50, 200, 45, screen_scale, data_font)
+        self.time_field = TextField(self.surface, 660, 50, 350, 45, screen_scale, data_font)
+        self.place_field = TextField(self.surface, 1015, 50, 680, 45, screen_scale, data_font)
+        self.timefactor_field = TextField(self.surface, 1700, 50, 150, 45, screen_scale, data_font)
 
         return
+
+
+# Place (city) markers
+class Marker(pygame.sprite.Sprite):
+    def __init__(self, id, name, x, y, size):
+        super().__init__()
+
+        self.id = id
+        self.name = name
+        self.image = pygame.Surface([size, size])
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+    def display_info(self, text_field):
+        text_field.write_text(f"{self.id}, {self.name:120s}")
 
 
 class Map:
@@ -176,6 +200,9 @@ class Map:
     def __init__(self, sat, timescale, day_image_name, night_image_name, width, height, screen_scale):
         self.sat = sat
         self.ts = timescale
+
+        # Clickable markers (cities)
+        self.markers = pygame.sprite.Group()
 
         self.screen_scale = screen_scale
         self.width = int(width * self.screen_scale)
@@ -213,6 +240,8 @@ class Map:
         year = today.year
         self.vernal, self.autumnal = self.get_equinoxes(year)
 
+        self.clicked_marker_field = TextField(self.day_image, 10, 0, 600, 50, screen_scale, info_font)
+
         return
 
     def update(self):
@@ -223,7 +252,6 @@ class Map:
         self.surface.blit(self.day_image, [0, 0])
         self.surface.blit(self.mask, [0, 0])
         self.surface.blit(self.drawing_layer, [0, 0])
-
         return
 
     def draw_tropics(self):
@@ -246,18 +274,6 @@ class Map:
         x, y = self.latlong_to_xy(-66.536, 0)
         pygame.draw.line(self.drawing_layer, t_polar, (0, y), (self.width, y), 1)
 
-    def draw_marker(self, lat, long):
-
-        # Plot a marker
-        radius = int(6 * self.screen_scale)  # Width of the X
-        line_width = int(2 * self.screen_scale)
-        x, y = self.latlong_to_xy(lat, long)
-
-        # Draw a circle
-        pygame.draw.circle(self.drawing_layer, marker_outline, [x, y], radius + line_width, line_width)
-        pygame.draw.circle(self.drawing_layer, marker_color, [x, y], radius, 0)
-        return
-
     def plot_sat(self, lat, long):
 
         x, y = self.latlong_to_xy(lat, long)
@@ -275,11 +291,28 @@ class Map:
 
         return
 
+    def draw_marker(self, id, name, lat, long):
+
+        # Plot a marker
+        radius = int(6 * self.screen_scale)  # Width of the X
+        line_width = int(2 * self.screen_scale)
+        x, y = self.latlong_to_xy(lat, long)
+
+        # Draw a circle
+        pygame.draw.circle(self.drawing_layer, marker_outline, [x, y], radius + line_width, line_width)
+        pygame.draw.circle(self.drawing_layer, marker_color, [x, y], radius, 0)
+
+        # Create marker as a clickable sprite
+        mkr = Marker(id, name, x - radius - line_width, y - radius - line_width, 2 * (radius + line_width))
+        self.markers.add(mkr)
+
+        return
+
     def plot_all_places(self, on_date=""):
         # Only plot places with GA date before on_date
         for region in places:
             if region.ga_date < on_date:
-                self.draw_marker(region.latlong.lat, region.latlong.lon)
+                self.draw_marker(region.id, region.name, region.latlong.lat, region.latlong.lon)
         return
 
     def draw_line(self, from_lat, from_long, to_lat, to_long, color, lwidth):
@@ -362,31 +395,34 @@ class Map:
         #     day2.blit(self.mask, (0, 0))
 
         old_x, old_y = -1, -1  # dummy start
-        old_y2 = -1
-        x, y, y2 = 0, 0, 0
+        # old_y2 = -1
+        x, y = 0, 0
+        # y2 = 0
 
         nsteps = 120
         step = int(self.width / nsteps)
 
         for x in range(0, self.width + step, step):
             long_degrees = ((360.0 * x / self.width) - 180.0)
-            lat_degrees, test_dec = self.terminator(long_degrees, t_current)
-            # lat_degrees_2, test_dec_2 = self.terminator2(long_degrees, t_current)
+            lat_degrees, declination = self.terminator(long_degrees, t_current)
 
             # Shading of terminator line goes down when declination is > 0, otherwise up
-            end_y = self.height if test_dec > 0 else 0
-            # end_y2 = self.height if test_dec_2 > 0 else 0
-
+            end_y = self.height if declination > 0 else 0
             y = -int(((lat_degrees / 180.0) * self.height) - self.height / 2)
+
+            ##
+            # lat_degrees_2, test_dec_2 = self.terminator2(long_degrees, t_current)
+            # end_y2 = self.height if test_dec_2 > 0 else 0
             # y2 = -int(((lat_degrees_2 / 180.0) * self.height) - self.height / 2)
 
             if old_x == -1:  # First time in loop
                 old_x = x
                 old_y = y
-                old_y2 = y2
+                # old_y2 = y2
             else:
                 # Draw the terminator (the day/night line, useful when testing)
 
+                # Uncomment to show hard line aas well as shading
                 # pygame.draw.line(mask, (0, 255, 0), (old_x, old_y), (x, y), width=5)
                 pygame.draw.polygon(mask, mask_color, ((old_x, old_y), (x, y), (x, end_y), (old_x, end_y)), 0)
 
@@ -395,7 +431,7 @@ class Map:
 
                 old_x = x
                 old_y = y
-                old_y2 = y2
+                # old_y2 = y2
 
         mask.blit(self.sun_icon, [sun_x, sun_y])
 
@@ -429,6 +465,7 @@ class Map:
 
         return lat_degrees, declination
 
+    # Alternative calculation of terminator using skyfield
     def terminator2(self, long_degrees, t_current):
         sun_from_earth = self.ephemeris['earth'].at(t_current).observe(self.ephemeris['sun'])
 
@@ -486,7 +523,7 @@ class App:
         # self.sat = sat  # Satellite object for all orbit calculations
 
         self.ts = load.timescale()
-        self.sat = EarthSatellite(tle_line1, tle_line2, sat_name, self.ts)
+        self.sat = EarthSatellite(tle.line1, tle.line2, sat_name, self.ts)
         self.start_at = start_at
 
         self.screen_w, self.screen_h = screen_w, screen_h
@@ -501,7 +538,7 @@ class App:
         self.map_y = int(header_h * self.screen_scale)
         # self.map_y = int((base_h - base_map_h)/2)
 
-        self.max_frame_rate = 20
+        self.max_frame_rate = 1
         self.time_factor = 1.0
         self.saved_time_factor = 1.0
         self.paused = False
@@ -564,13 +601,25 @@ class App:
 
         running = True
         while running:
-            for event in pygame.event.get():
+            self.events = pygame.event.get()
+            for event in self.events:
                 if event.type == pygame.QUIT:
                     running = False
                 if event.type == pygame.VIDEORESIZE:
                     # There's some code to add back window content here.
                     # old_surface_saved = self.main_screen
                     self.main_screen = pygame.display.set_mode((event.w, event.h))
+                elif event.type == MOUSEBUTTONDOWN:
+                    # Find which city was clicked on
+                    x, y = event.pos
+                    y -= self.map_y  # Offset of map relative to app
+                    marker_found = False
+                    for m in self.map.markers:
+                        if m.rect.collidepoint(x, y):
+                            m.display_info(self.map.clicked_marker_field)
+                            marker_found = True
+                    if not marker_found:
+                        self.map.clicked_marker_field.write_text("")
                 elif event.type == KEYDOWN:
                     if event.key == K_ESCAPE or event.key == K_q:  # Q/Esc = Quit
                         running = False
@@ -636,7 +685,7 @@ class App:
             self.data_surface.place_field.write_text(f"{place_id} ({dist:.0f}km)")
 
             # Display name of the closes place & draw line from sat to that location
-            self.header_surface.heading_field.write_text(f" {place_id}, {place_name} ", centered=True, vcentered=True)
+            self.header_surface.heading_field.write_text(f" {place_id}, {place_name} ")
             self.map.draw_line(sat_lat, sat_long, place_loc.lat, place_loc.lon, icon_border_color, 4)
 
             # Plot satellite position and orbit lines
@@ -716,16 +765,18 @@ if __name__ == "__main__":
     size_group = parser.add_mutually_exclusive_group()
     size_group.add_argument('-f', '--fullscreen', help="Run full screen (window size parameters ignored)",
                             required=False, default=False, action="store_true")
-    size_group.add_argument('-w', '--window_width', help=f'Window Width -[{base_w}]', type=int, default=base_w)
-    parser.add_argument('-t', '--tropics', help="Draw tropics ", required=False, default=False, action="store_true")
+    size_group.add_argument('-w', '--window_width', help=f'Window Width [{base_w}]', type=int, default=base_w)
+    parser.add_argument('-l', '--ll', help="Draw latitude lines: Equator, Tropics, polar circles", required=False, default=False, action="store_true")
 
     args = parser.parse_args()
     DEBUG = args.debug
     sat_name = args.satellite_name
     start_at = args.start_at
     fullscreen = args.fullscreen
-    draw_tropics = args.tropics
+    draw_tropics = args.ll
 
+    # Default 1920 x 1080
+    win_w, win_h = 1920, 1080
     if fullscreen:
         mon_w, mon_h = get_screen_size()
         full_screen_w = int(base_w * mon_h / base_h)
@@ -735,9 +786,10 @@ if __name__ == "__main__":
         win_w = int(args.window_width)
         win_h = base_h * (win_w / base_w)
 
-    found, tle_line1, tle_line2 = get_tle(sat_name)
+    # found, tle_line1, tle_line2 = get_tle(sat_name)
+    tle = TLE(sat_name)
 
-    if found:
+    if tle.is_valid():
         app = App(sat_name, win_w, win_h, start_at, fullscreen=fullscreen)
 
         if draw_tropics:

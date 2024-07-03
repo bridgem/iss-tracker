@@ -3,9 +3,22 @@
 import math
 from collections import namedtuple
 from datetime import date
+import csv
 
 latlong = namedtuple("Coords", ['lat', 'lon'])
 place = namedtuple("Location", ['id', 'name', 'latlong', 'ga_date'])
+place_list = namedtuple("Listname", ['place'])
+
+list1 = { "title": "Olympics",
+        "places": [
+	place('Athens', 'Summer 1896,2004', latlong(37.9839412, 23.7283052), '6/4/1896'),
+	place('Paris', 'Summer 1900,1924,2024', latlong(48.8534951, 2.3483915), '1900-05-14'),
+]}
+
+pass
+
+
+
 
 # Places are any lat/long position, the following are the locations of Oracle's cloud regions
 # Only places that have a ga_date in the past are considered
@@ -47,56 +60,56 @@ oci_regions = [
 ]
 
 summer_olympics = [
-	place('Athens 1896,2004', 'Athens', latlong(37.9839412, 23.7283052), '6/4/1896'),
-	place('Paris 1900,1924,2024', 'Paris', latlong(48.8534951, 2.3483915), '1900-05-14'),
-	place('St. Louis 1904', 'St. Louis', latlong(52.9211149, -105.8091459), '1904-07-01'),
-	place('London 1908,1948,2012', 'London', latlong(51.5073219, -0.1276474), '1908-04-27'),
-	place('Stockholm 1912', 'Stockholm', latlong(59.3251172, 18.0710935), '1912-07-06'),
-	place('Antwerp 1920', 'Antwerp', latlong(51.2211097, 4.3997081), '1920-08-14'),
-	place('Amsterdam 1928', 'Amsterdam', latlong(52.3727598, 4.8936041), '1928-07-28'),
-	place('Los Angeles 1932,1984,2028', 'Los Angeles', latlong(34.0536909, -118.242766), '1932-07-30'),
-	place('Berlin 1936', 'Berlin', latlong(52.5170365, 13.3888599), '1936-08-01'),
-	place('Helsinki 1952', 'Helsinki', latlong(60.1674881, 24.9427473), '1952-07-19'),
-	place('Melbourne 1956', 'Melbourne', latlong(-37.8142176, 144.9631608), '1956-11-22'),
-	place('Rome 1960', 'Rome', latlong(41.8933203, 12.4829321), '1960-08-25'),
-	place('Tokyo 1964,2020', 'Tokyo', latlong(35.6828387, 139.7594549), '1964-10-10'),
-	place('Mexico City 1968', 'Mexico City', latlong(19.4326296, -99.1331785), '1968-10-12'),
-	place('Munich 1972', 'Munich', latlong(48.1371079, 11.5753822), '1972-08-26'),
-	place('Montreal 1976', 'Montreal', latlong(45.5031824, -73.5698065), '1976-07-17'),
-	place('Moscow 1980', 'Moscow', latlong(55.7504461, 37.6174943), '1980-07-19'),
-	place('Seoul 1988', 'Seoul', latlong(37.5666791, 126.9782914), '1988-09-17'),
-	place('Barcelona 1992', 'Barcelona', latlong(41.387917, 2.1699187), '1992-07-25'),
-	place('Atlanta 1996', 'Atlanta', latlong(33.7489924, -84.3902644), '1996-07-19'),
-	place('Sydney 2000', 'Sydney', latlong(-33.8698439, 151.2082848), '2000-09-15'),
-	place('Beijing 2008', 'Beijing', latlong(39.906217, 116.3912757), '2008-08-08'),
-	place('Rio 2016', 'Rio de Janeiro', latlong(-22.9110137, -43.2093727), '2016-08-05'),
-	place('Brisbane 2032', 'Brisbane', latlong(37.687165, -122.402794), '2032-07-23'),
+	place('Athens', 'Summer 1896,2004', latlong(37.9839412, 23.7283052), '6/4/1896'),
+	place('Paris', 'Summer 1900,1924,2024', latlong(48.8534951, 2.3483915), '1900-05-14'),
+	place('St. Louis', 'Summer 1904', latlong(52.9211149, -105.8091459), '1904-07-01'),
+	place('London', 'Summer 1908,1948,2012', latlong(51.5073219, -0.1276474), '1908-04-27'),
+	place('Stockholm', 'Summer 1912', latlong(59.3251172, 18.0710935), '1912-07-06'),
+	place('Antwerp', 'Summer 1920', latlong(51.2211097, 4.3997081), '1920-08-14'),
+	place('Amsterdam', 'Summer 1928', latlong(52.3727598, 4.8936041), '1928-07-28'),
+	place('Los Angeles', 'Summer 1932,1984,2028', latlong(34.0536909, -118.242766), '1932-07-30'),
+	place('Berlin', 'Summer 1936', latlong(52.5170365, 13.3888599), '1936-08-01'),
+	place('Helsinki', 'Summer 1952', latlong(60.1674881, 24.9427473), '1952-07-19'),
+	place('Melbourne', 'Summer 1956', latlong(-37.8142176, 144.9631608), '1956-11-22'),
+	place('Rome', 'Summer 1960', latlong(41.8933203, 12.4829321), '1960-08-25'),
+	place('Tokyo', 'Summer 1964,2020', latlong(35.6828387, 139.7594549), '1964-10-10'),
+	place('Mexico City', 'Summer 1968', latlong(19.4326296, -99.1331785), '1968-10-12'),
+	place('Munich', 'Summer 1972', latlong(48.1371079, 11.5753822), '1972-08-26'),
+	place('Montreal', 'Summer 1976', latlong(45.5031824, -73.5698065), '1976-07-17'),
+	place('Moscow', 'Summer 1980', latlong(55.7504461, 37.6174943), '1980-07-19'),
+	place('Seoul', 'Summer 1988', latlong(37.5666791, 126.9782914), '1988-09-17'),
+	place('Barcelona', 'Summer 1992', latlong(41.387917, 2.1699187), '1992-07-25'),
+	place('Atlanta', 'Summer 1996', latlong(33.7489924, -84.3902644), '1996-07-19'),
+	place('Sydney', 'Summer 2000', latlong(-33.8698439, 151.2082848), '2000-09-15'),
+	place('Beijing', 'Summer 2008', latlong(39.906217, 116.3912757), '2008-08-08'),
+	place('Rio de Janeiro', 'Summer 2016', latlong(-22.9110137, -43.2093727), '2016-08-05'),
+	place('Brisbane', 'Summer 2032', latlong(37.687165, -122.402794), '2032-07-23'),
 ]
 
 winter_olympics = [
-	place('Chamonix 1924', 'Chamonix', latlong(45.9231, 6.8697), '1924-01-25'),
-	place('St. Moritz 1928,1948', 'St. Moritz', latlong(46.4978958, 9.8392428), '1928-02-11'),
-	place('Lake Placid 1932,1980', 'Lake Placid', latlong(27.2930999, -81.3628502), '1932-02-04'),
-	place('Garmisch 1936', 'Garmisch-Partenkirchen', latlong(47.4923741, 11.0962815), '1936-02-06'),
-	place('Oslo 1952', 'Oslo', latlong(59.9133301, 10.7389701), '1952-02-14'),
-	place('Cortina 1956', 'Cortina d''Ampezzo', latlong(46.5383332, 12.1373506), '1956-01-26'),
-	place('Squaw Valley 1960', 'Squaw Valley', latlong(36.7402261, -119.246785), '1960-02-18'),
-	place('Innsbruck 1964', 'Innsbruck', latlong(47.2654296, 11.3927685), '1964-01-29'),
-	place('Grenoble 1968', 'Grenoble', latlong(45.1875602, 5.7357819), '1968-02-06'),
-	place('Sapporo 1972', 'Sapporo', latlong(43.061936, 141.3542924), '1972-02-03'),
-	place('Innsbruck 1976', 'Innsbruck', latlong(47.2654296, 11.3927685), '1976-02-04'),
-	place('Sarajevo 1984', 'Sarajevo', latlong(43.8519774, 18.3866868), '1984-02-08'),
-	place('Calgary 1988', 'Calgary', latlong(51.047306, -114.05797), '1988-02-13'),
-	place('Albertville 1992', 'Albertville', latlong(45.6754622, 6.3925417), '1992-02-08'),
-	place('Lillehammer 1994', 'Lillehammer', latlong(61.1145451, 10.4670073), '1994-02-12'),
-	place('Nagano 1998', 'Nagano', latlong(36.1143945, 138.0319015), '1998-02-07'),
-	place('Salt Lake City 2002', 'Salt Lake City', latlong(40.7596198, -111.8867975), '2002-02-08'),
-	place('Turin 2006', 'Turin', latlong(45.0677551, 7.6824892), '2006-02-10'),
-	place('Vancouver 2010', 'Vancouver', latlong(49.2608724, -123.113952), '2010-02-12'),
-	place('Sochi 2014', 'Sochi', latlong(43.5854823, 39.723109), '2014-02-07'),
-	place('Pyeongchang 2018', 'Pyeongchang', latlong(37.583766, 128.320312), '2018-02-09'),
-	place('Beijing 2022', 'Beijing', latlong(39.906217, 116.3912757), '2022-02-04'),
-	place('Milan–Cortina 2026', 'Milan–Cortina d''Ampezzo', latlong(45.4641943, 9.1896346), '2026-02-06'),
+	place('Chamonix', 'Winter 1924', latlong(45.9231, 6.8697), '1924-01-25'),
+	place('St. Moritz', 'Winter 1928,1948', latlong(46.4978958, 9.8392428), '1928-02-11'),
+	place('Lake Placid', 'Winter 1932,1980', latlong(27.2930999, -81.3628502), '1932-02-04'),
+	place('Garmisch-Partenkirchen', 'Winter 1936', latlong(47.4923741, 11.0962815), '1936-02-06'),
+	place('Oslo', 'Winter 1952', latlong(59.9133301, 10.7389701), '1952-02-14'),
+	place('Cortina d''Ampezzo', 'Winter 1956', latlong(46.5383332, 12.1373506), '1956-01-26'),
+	place('Squaw Valley', 'Winter 1960', latlong(36.7402261, -119.246785), '1960-02-18'),
+	place('Innsbruck', 'Winter 1964', latlong(47.2654296, 11.3927685), '1964-01-29'),
+	place('Grenoble', 'Winter 1968', latlong(45.1875602, 5.7357819), '1968-02-06'),
+	place('Sapporo', 'Winter 1972', latlong(43.061936, 141.3542924), '1972-02-03'),
+	place('Innsbruck', 'Winter 1976', latlong(47.2654296, 11.3927685), '1976-02-04'),
+	place('Sarajevo', 'Winter 1984', latlong(43.8519774, 18.3866868), '1984-02-08'),
+	place('Calgary', 'Winter 1988', latlong(51.047306, -114.05797), '1988-02-13'),
+	place('Albertville', 'Winter 1992', latlong(45.6754622, 6.3925417), '1992-02-08'),
+	place('Lillehammer', 'Winter 1994', latlong(61.1145451, 10.4670073), '1994-02-12'),
+	place('Nagano', 'Winter 1998', latlong(36.1143945, 138.0319015), '1998-02-07'),
+	place('Salt Lake City', 'Winter 2002', latlong(40.7596198, -111.8867975), '2002-02-08'),
+	place('Turin', 'Winter 2006', latlong(45.0677551, 7.6824892), '2006-02-10'),
+	place('Vancouver', 'Winter 2010', latlong(49.2608724, -123.113952), '2010-02-12'),
+	place('Sochi', 'Winter 2014', latlong(43.5854823, 39.723109), '2014-02-07'),
+	place('Pyeongchang', 'Winter 2018', latlong(37.583766, 128.320312), '2018-02-09'),
+	place('Beijing', 'Winter 2022', latlong(39.906217, 116.3912757), '2022-02-04'),
+	place('Milan–Cortina d''Ampezzo', 'Winter 2026', latlong(45.4641943, 9.1896346), '2026-02-06'),
 ]
 
 capitals = [
@@ -345,15 +358,40 @@ capitals = [
 	place('Harare', 'Zimbabwe', latlong(-17.81666667, 31.033333), '1900-01-01'),
 ]
 test_places = [
+	place('London', 'Summer 1908,1948,2012', latlong(51.5073219, -0.1276474), '1908-04-27'),
 	place('zero-zero', 'Nowhere', latlong(0, 0), '1900-01-01'),
 ]
 
+# EXPERIMENTAL: Read places from a CSV file
+# ====================================================================================================================
+# ====================================================================================================================
+# CSV Format:
+# Country,Valid from Date,Capital Name,Lat,Long
+PLACES_FILE = 'capitals.csv'
+PLACES_FILE = 'grid.csv'
+
+csvplaces = []
+got_first = False
+
+with open(PLACES_FILE, 'r', encoding='utf-8') as csvfile:
+	csv_reader = csv.reader(csvfile, delimiter=",", quotechar='"')
+	next(csv_reader, None)  # skip the header
+	for line in csv_reader:
+		if len(line) != 0:
+			# City, Co
+			# untry, Lat, Long, Date
+			# print(f"{line}, {len(line)} ")
+			csvplaces.append(place(line[2], line[0], latlong(float(line[3]), float(line[4])), line[1]))
+# ====================================================================================================================
+# ====================================================================================================================
+
 #places = oci_regions
-#places = summer_olympics + winter_olympics
+# places = summer_olympics + winter_olympics
 places = capitals
+# places = test_places
+# places = csvplaces
 
 R = 6378.1   # Radius of Earth (km)
-
 
 def dist_between(p1, p2):
 	# Haversine method for great circle distance

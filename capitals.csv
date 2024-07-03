@@ -1,0 +1,241 @@
+﻿Country,Date,Capital Name,Lat,Long
+"Afghanistan","1900-01-01","Kabul",34.51666667,69.183333
+
+"Albania","1900-01-01","Tirana",41.31666667,19.816667
+"Algeria","1900-01-01","Algiers",36.75,3.05
+
+"Andorra","1900-01-01","Andorra la Vella",42.5,1.516667
+"Angola","1900-01-01","Luanda",-8.833333333,13.216667
+"Anguilla","1900-01-01","The Valley",18.21666667,-63.05
+"Antarctica","1900-01-01","South Pole",0,-90
+"Antigua and Barbuda","1900-01-01","Saint John's",17.11666667,-61.85
+"Argentina","1900-01-01","Buenos Aires",-34.58333333,-58.666667
+"Armenia","1900-01-01","Yerevan",40.16666667,44.5
+
+"Australia","1900-01-01","Canberra",-35.26666667,149.133333
+"Austria","1900-01-01","Vienna",48.2,16.366667
+"Azerbaijan","1900-01-01","Baku",40.38333333,49.866667
+"The Bahamas","1900-01-01","Nassau",25.08333333,-77.35
+"Bahrain","1900-01-01","Manama",26.23333333,50.566667
+"Bangladesh","1900-01-01","Dhaka",23.71666667,90.4
+"Barbados","1900-01-01","Bridgetown",13.1,-59.616667
+"Belarus","1900-01-01","Minsk",53.9,27.566667
+"Belgium","1900-01-01","Brussels",50.83333333,4.333333
+"Belize","1900-01-01","Belmopan",17.25,-88.766667
+"Benin","1900-01-01","Porto-Novo",6.483333333,2.616667
+"Bermuda","1900-01-01","Hamilton",32.28333333,-64.783333
+"Bhutan","1900-01-01","Thimphu",27.46666667,89.633333
+"Bolivia","1900-01-01","La Paz",-16.5,-68.15
+"Bosnia and Herzegovina","1900-01-01","Sarajevo",43.86666667,18.416667
+"Botswana","1900-01-01","Gaborone",-24.63333333,25.9
+"Brazil","1900-01-01","Brasilia",-15.78333333,-47.916667
+"British Indian Ocean Territory","1900-01-01","Diego Garcia",-7.3,72.4
+"British Virgin Islands","1900-01-01","Road Town",18.41666667,-64.616667
+"Brunei","1900-01-01","Bandar Seri Begawan",4.883333333,114.933333
+"Bulgaria","1900-01-01","Sofia",42.68333333,23.316667
+"Burkina Faso","1900-01-01","Ouagadougou",12.36666667,-1.516667
+"Burundi","1900-01-01","Bujumbura",-3.366666667,29.35
+"Cambodia","1900-01-01","Phnom Penh",11.55,104.916667
+"Cameroon","1900-01-01","Yaounde",3.866666667,11.516667
+"Canada","1900-01-01","Ottawa",45.41666667,-75.7
+"Cabo Verde","1900-01-01","Praia",14.91666667,-23.516667
+"Cayman Islands","1900-01-01","George Town",19.3,-81.383333
+"Central African Republic","1900-01-01","Bangui",4.366666667,18.583333
+"Chad","1900-01-01","N''Djamena",12.1,15.033333
+"Chile","1900-01-01","Santiago",-33.45,-70.666667
+"China","1900-01-01","Beijing",39.91666667,116.383333
+"Christmas Island","1900-01-01","The Settlement",-10.41666667,105.716667
+
+"Colombia","1900-01-01","Bogota",4.6,-74.083333
+"Comoros","1900-01-01","Moroni",-11.7,43.233333
+"Cook Islands","1900-01-01","Avarua",-21.2,-159.766667
+"Costa Rica","1900-01-01","San Jose",9.933333333,-84.083333
+"Côte d'Ivoire","1900-01-01","Yamoussoukro",6.816666667,-5.266667
+"Croatia","1900-01-01","Zagreb",45.8,16
+"Cuba","1900-01-01","Havana",23.11666667,-82.35
+
+"Cyprus","1900-01-01","Nicosia",35.16666667,33.366667
+"Czech Republic","1900-01-01","Prague",50.08333333,14.466667
+"Democratic Republic of the Congo","1900-01-01","Kinshasa",-4.316666667,15.3
+"Denmark","1900-01-01","Copenhagen",55.66666667,12.583333
+"Djibouti","1900-01-01","Djibouti",11.58333333,43.15
+"Dominica","1900-01-01","Roseau",15.3,-61.4
+"Dominican Republic","1900-01-01","Santo Domingo",18.46666667,-69.9
+"Ecuador","1900-01-01","Quito",-0.216666667,-78.5
+"Egypt","1900-01-01","Cairo",30.05,31.25
+"El Salvador","1900-01-01","San Salvador",13.7,-89.2
+"Equatorial Guinea","1900-01-01","Malabo",3.75,8.783333
+"Eritrea","1900-01-01","Asmara",15.33333333,38.933333
+"Estonia","1900-01-01","Tallinn",59.43333333,24.716667
+"Ethiopia","1900-01-01","Addis Ababa",9.033333333,38.7
+"Falkland Islands","1900-01-01","Stanley",-51.7,-57.85
+"Faroe Islands","1900-01-01","Torshavn",62,-6.766667
+"Federated States of Micronesia","1900-01-01","Palikir",6.916666667,158.15
+"Fiji","1900-01-01","Suva",-18.13333333,178.416667
+"Finland","1900-01-01","Helsinki",60.16666667,24.933333
+"France","1900-01-01","Paris",48.86666667,2.333333
+"French Polynesia","1900-01-01","Papeete",-17.53333333,-149.566667
+
+"Gabon","1900-01-01","Libreville",0.383333333,9.45
+"Georgia","1900-01-01","Tbilisi",41.68333333,44.833333
+"Germany","1900-01-01","Berlin",52.51666667,13.4
+"Ghana","1900-01-01","Accra",5.55,-0.216667
+"Gibraltar","1900-01-01","Gibraltar",36.13333333,-5.35
+"Greece","1900-01-01","Athens",37.98333333,23.733333
+"Greenland","1900-01-01","Nuuk",64.18333333,-51.75
+"Grenada","1900-01-01","Saint George''s",12.05,-61.75
+
+"Guatemala","1900-01-01","Guatemala City",14.61666667,-90.516667
+
+"Guinea","1900-01-01","Conakry",9.5,-13.7
+"Guinea-Bissau","1900-01-01","Bissau",11.85,-15.583333
+"Guyana","1900-01-01","Georgetown",6.8,-58.15
+"Haiti","1900-01-01","Port-au-Prince",18.53333333,-72.333333
+"Honduras","1900-01-01","Tegucigalpa",14.1,-87.216667
+"Hong Kong","1900-01-01","Hong Kong",22.3,114.2
+"Hungary","1900-01-01","Budapest",47.5,19.083333
+"Iceland","1900-01-01","Reykjavik",64.15,-21.95
+"India","1900-01-01","New Delhi",28.6,77.2
+"Indonesia","1900-01-01","Jakarta",-6.166666667,106.816667
+"Iran","1900-01-01","Tehran",35.7,51.416667
+"Iraq","1900-01-01","Baghdad",33.33333333,44.4
+"Ireland","1900-01-01","Dublin",53.31666667,-6.233333
+
+"Israel","1900-01-01","Jerusalem",31.76666667,35.233333
+"Italy","1900-01-01","Rome",41.9,12.483333
+"Jamaica","1900-01-01","Kingston",18,-76.8
+"Japan","1900-01-01","Tokyo",35.68333333,139.75
+
+"Jordan","1900-01-01","Amman",31.95,35.933333
+"Kazakhstan","1900-01-01","Astana",51.16666667,71.416667
+"Kenya","1900-01-01","Nairobi",-1.283333333,36.816667
+"Kiribati","1900-01-01","Tarawa",-0.883333333,169.533333
+"Kosovo","1900-01-01","Pristina",42.66666667,21.166667
+"Kuwait","1900-01-01","Kuwait City",29.36666667,47.966667
+"Kyrgyzstan","1900-01-01","Bishkek",42.86666667,74.6
+"Laos","1900-01-01","Vientiane",17.96666667,102.6
+"Latvia","1900-01-01","Riga",56.95,24.1
+"Lebanon","1900-01-01","Beirut",33.86666667,35.5
+"Lesotho","1900-01-01","Maseru",-29.31666667,27.483333
+"Liberia","1900-01-01","Monrovia",6.3,-10.8
+"Libya","1900-01-01","Tripoli",32.88333333,13.166667
+"Liechtenstein","1900-01-01","Vaduz",47.13333333,9.516667
+"Lithuania","1900-01-01","Vilnius",54.68333333,25.316667
+"Luxembourg","1900-01-01","Luxembourg",49.6,6.116667
+
+"North Macedonia","1900-01-01","Skopje",42,21.433333
+"Madagascar","1900-01-01","Antananarivo",-18.91666667,47.516667
+"Malawi","1900-01-01","Lilongwe",-13.96666667,33.783333
+"Malaysia","1900-01-01","Kuala Lumpur",3.166666667,101.7
+"Maldives","1900-01-01","Male",4.166666667,73.5
+"Mali","1900-01-01","Bamako",12.65,-8
+"Malta","1900-01-01","Valletta",35.88333333,14.5
+"Marshall Islands","1900-01-01","Majuro",7.1,171.383333
+"Mauritania","1900-01-01","Nouakchott",18.06666667,-15.966667
+"Mauritius","1900-01-01","Port Louis",-20.15,57.483333
+"Mexico","1900-01-01","Mexico City",19.43333333,-99.133333
+"Moldova","1900-01-01","Chisinau",47,28.85
+"Monaco","1900-01-01","Monaco",43.73333333,7.416667
+"Mongolia","1900-01-01","Ulaanbaatar",47.91666667,106.916667
+"Montenegro","1900-01-01","Podgorica",42.43333333,19.266667
+"Montserrat","1900-01-01","Plymouth",16.7,-62.216667
+"Morocco","1900-01-01","Rabat",34.01666667,-6.816667
+"Mozambique","1900-01-01","Maputo",-25.95,32.583333
+"Myanmar","1900-01-01","Rangoon",16.8,96.15
+"Namibia","1900-01-01","Windhoek",-22.56666667,17.083333
+"Nauru","1900-01-01","Yaren",-0.5477,166.920867
+"Nepal","1900-01-01","Kathmandu",27.71666667,85.316667
+"Netherlands","1900-01-01","Amsterdam",52.35,4.916667
+
+"New Zealand","1900-01-01","Wellington",-41.3,174.783333
+"Nicaragua","1900-01-01","Managua",12.13333333,-86.25
+"Niger","1900-01-01","Niamey",13.51666667,2.116667
+"Nigeria","1900-01-01","Abuja",9.083333333,7.533333
+"Niue","1900-01-01","Alofi",-19.01666667,-169.916667
+
+"North Korea","1900-01-01","Pyongyang",39.01666667,125.75
+"Northern Mariana Islands","1900-01-01","Saipan",15.2,145.75
+"Norway","1900-01-01","Oslo",59.91666667,10.75
+"Oman","1900-01-01","Muscat",23.61666667,58.583333
+"Pakistan","1900-01-01","Islamabad",33.68333333,73.05
+"Palau","1900-01-01","Melekeok",7.483333333,134.633333
+"Palestine","1900-01-01","Jerusalem",31.76666667,35.233333
+"Panama","1900-01-01","Panama City",8.966666667,-79.533333
+"Papua New Guinea","1900-01-01","Port Moresby",-9.45,147.183333
+"Paraguay","1900-01-01","Asuncion",-25.26666667,-57.666667
+"Peru","1900-01-01","Lima",-12.05,-77.05
+"Philippines","1900-01-01","Manila",14.6,120.966667
+"Pitcairn Islands","1900-01-01","Adamstown",-25.06666667,-130.083333
+"Poland","1900-01-01","Warsaw",52.25,21
+"Portugal","1900-01-01","Lisbon",38.71666667,-9.133333
+"Puerto Rico","1900-01-01","San Juan",18.46666667,-66.116667
+"Qatar","1900-01-01","Doha",25.28333333,51.533333
+"Republic of the Congo","1900-01-01","Brazzaville",-4.25,15.283333
+"Romania","1900-01-01","Bucharest",44.43333333,26.1
+"Russia","1900-01-01","Moscow",55.75,37.6
+"Rwanda","1900-01-01","Kigali",-1.95,30.05
+
+"Saint Helena Ascension and Tristan da Cunha","1900-01-01","Jamestown",-15.93333333,-5.716667
+"Saint Kitts and Nevis","1900-01-01","Basseterre",17.3,-62.716667
+"Saint Lucia","1900-01-01","Castries",14,-61
+
+
+"Saint Vincent and the Grenadines","1900-01-01","Kingstown",13.13333333,-61.216667
+"Samoa","1900-01-01","Apia",-13.81666667,-171.766667
+"San Marino","1900-01-01","San Marino",43.93333333,12.416667
+"São Tomé and Príncipe","1900-01-01","Sao Tome",0.333333333,6.733333
+"Saudi Arabia","1900-01-01","Riyadh",24.65,46.7
+"Senegal","1900-01-01","Dakar",14.73333333,-17.633333
+"Serbia","1900-01-01","Belgrade",44.83333333,20.5
+"Seychelles","1900-01-01","Victoria",-4.616666667,55.45
+"Sierra Leone","1900-01-01","Freetown",8.483333333,-13.233333
+"Singapore","1900-01-01","Singapore",1.283333333,103.85
+
+"Slovakia","1900-01-01","Bratislava",48.15,17.116667
+"Slovenia","1900-01-01","Ljubljana",46.05,14.516667
+"Solomon Islands","1900-01-01","Honiara",-9.433333333,159.95
+"Somalia","1900-01-01","Mogadishu",2.066666667,45.333333
+"Somaliland","1900-01-01","Hargeisa",9.55,44.05
+"South Africa","1900-01-01","Pretoria",-25.7,28.216667
+"South Georgia and the South Sandwich Islands","1900-01-01","King Edward Point",-54.283333,-36.5
+"South Korea","1900-01-01","Seoul",37.55,126.983333
+"South Sudan","1900-01-01","Juba",4.85,31.616667
+"Spain","1900-01-01","Madrid",40.4,-3.683333
+"Sri Lanka","1900-01-01","Colombo",6.916666667,79.833333
+"Sudan","1900-01-01","Khartoum",15.6,32.533333
+"Suriname","1900-01-01","Paramaribo",5.833333333,-55.166667
+"Svalbard","1900-01-01","Longyearbyen",78.21666667,15.633333
+"Eswatini","1900-01-01","Mbabane",-26.31666667,31.133333
+"Sweden","1900-01-01","Stockholm",59.33333333,18.05
+"Switzerland","1900-01-01","Bern",46.91666667,7.466667
+"Syria","1900-01-01","Damascus",33.5,36.3
+"Taiwan","1900-01-01","Taipei",25.03333333,121.516667
+"Tajikistan","1900-01-01","Dushanbe",38.55,68.766667
+"Tanzania","1900-01-01","Dar es Salaam",-6.8,39.283333
+"Thailand","1900-01-01","Bangkok",13.75,100.516667
+"Republic of the Gambia","1900-01-01","Banjul",13.45,-16.566667
+"East Timor","1900-01-01","Dili",-8.583333333,125.6
+"Togo","1900-01-01","Lome",6.116666667,1.216667
+
+"Tonga","1900-01-01","Nuku''alofa",-21.13333333,-175.2
+"Trinidad and Tobago","1900-01-01","Port of Spain",10.65,-61.516667
+"Tunisia","1900-01-01","Tunis",36.8,10.183333
+"Turkey","1900-01-01","Ankara",39.93333333,32.866667
+"Turkmenistan","1900-01-01","Ashgabat",37.95,58.383333
+"Turks and Caicos Islands","1900-01-01","Grand Turk",21.46666667,-71.133333
+"Tuvalu","1900-01-01","Funafuti",-8.516666667,179.216667
+"Uganda","1900-01-01","Kampala",0.316666667,32.55
+"Ukraine","1900-01-01","Kyiv",50.43333333,30.516667
+"United Arab Emirates","1900-01-01","Abu Dhabi",24.46666667,54.366667
+"United Kingdom","1900-01-01","London",51.5,-0.083333
+"United States","1900-01-01","Washington, D.C.",38.883333,-77
+"Uruguay","1900-01-01","Montevideo",-34.85,-56.166667
+
+"Uzbekistan","1900-01-01","Tashkent",41.31666667,69.25
+"Vanuatu","1900-01-01","Port-Vila",-17.73333333,168.316667
+"Vatican City","1900-01-01","Vatican City",41.9,12.45
+"Venezuela","1900-01-01","Caracas",10.48333333,-66.866667
+"Vietnam","1900-01-01","Hanoi",21.03333333,105.85
+"Yemen","1900-01-01","Sanaa",15.35,44.2
+"Zambia","1900-01-01","Lusaka",-15.41666667,28.283333
+"Zimbabwe","1900-01-01","Harare",-17.81666667,31.033333
