@@ -17,7 +17,7 @@ Each ISS orbit is roughly 90 minutes, but the map version allows you to control 
 
 It uses satellite data from NORAD and the skyfield python library to compute the satellite's position and launches a separate window using pygame.
 
-The iss_tracker_map responds to the following keys while running:
+iss_tracker_map.py responds to the following keys while running:
 ```
     +/-      Speed up/slow down the ISS, dropping below 1x speed reverses the ISS!
     1        Reset ISS speed to real time

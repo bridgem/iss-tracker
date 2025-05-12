@@ -71,9 +71,9 @@ data_surface_h = 100
 data_surface_color = (199, 70, 52)     # Data surface at bottom of screen
 transparent_color = (255, 255, 255, 255)
 header_font = {'name': 'couriernew', 'size': 48, 'bold': True,  'color': (255, 192, 0), 'bg_color': header_color}
-label_font = {'name': 'calibri', 'size': 30, 'bold': False, 'color': (200, 200, 200), 'bg_color': data_surface_color}
-data_font = {'name': 'calibri', 'size': 36, 'bold': False, 'color': "white", 'bg_color': data_surface_color}
-info_font = {'name': 'calibri', 'size': 30, 'bold': False, 'color': "black", 'bg_color': transparent_color}
+label_font = {'name': 'freesans', 'size': 30, 'bold': False, 'color': (200, 200, 200), 'bg_color': data_surface_color}
+data_font = {'name': 'freesans', 'size': 36, 'bold': False, 'color': "white", 'bg_color': data_surface_color}
+info_font = {'name': 'freesans', 'size': 30, 'bold': False, 'color': "black", 'bg_color': transparent_color}
 
 # # Time parameters for calculating observation time
 # actual_time_prev = time.time()  # Baseline time (actual real-world time)
@@ -311,7 +311,7 @@ class Map:
     def plot_all_places(self, on_date=""):
         # Only plot places with GA date before on_date
         for region in places:
-            if region.ga_date < on_date:
+            if region.valid_from < on_date:
                 self.draw_marker(region.id, region.name, region.latlong.lat, region.latlong.lon)
         return
 

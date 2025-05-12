@@ -2,3 +2,4 @@ __pycache__/
 unused/
 /stations.txt
 /de421.bsp
+iss_tracker_curses.py
